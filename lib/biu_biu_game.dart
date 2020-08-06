@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:biubiubiu/component/bullet.dart';
 import 'package:flame/anchor.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
@@ -33,16 +34,12 @@ class BiuBiuGame extends BaseGame with PanDetector {
     super.update(t);
   }
 
-
   @override
-  void onPanDown(DragDownDetails details) {
-
-  }
-
+  void onPanDown(DragDownDetails details) {}
 
   @override
   void onPanUpdate(DragUpdateDetails details) {
-    if(player.toRect().contains(details.globalPosition)){
+    if (player.toRect().contains(details.globalPosition)) {
       player.move(details.delta);
     }
   }

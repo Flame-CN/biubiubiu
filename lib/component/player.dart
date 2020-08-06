@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:biubiubiu/component/bullet.dart';
 import 'package:flame/animation.dart';
-import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/sprite.dart';
@@ -12,6 +12,7 @@ import '../biu_biu_game.dart';
 class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
   Paint overridePaint;
   Animation _live;
+  BulletFactory _bulletFactory;
 
   //生命值
   int life = 1;
@@ -31,6 +32,8 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
       ],
       stepTime: 0.2,
     );
+    _bulletFactory = BulletFactory(limit: 0.3);
+    gameRef.add(_bulletFactory);
   }
 
   void move(Offset offset) {
