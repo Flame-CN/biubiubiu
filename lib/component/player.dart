@@ -10,7 +10,6 @@ import 'package:flame/sprite.dart';
 import '../biu_biu_game.dart';
 
 class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
-  Paint overridePaint;
   Animation _live;
   BulletFactory _bulletFactory;
 
@@ -49,7 +48,7 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
   void render(Canvas c) {
     prepareCanvas(c);
     if (life >= 0) {
-      _live.getSprite().render(c, width: width, height: height, overridePaint: overridePaint);
+      _live.getSprite().render(c, width: width, height: height);
     }
   }
 
@@ -60,4 +59,7 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
       _live.update(t);
     }
   }
+
+  @override
+  int priority() => 10;
 }

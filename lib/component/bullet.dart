@@ -19,11 +19,11 @@ class Bullet extends SpriteComponent {
   //是否销毁
   bool isDestroy = false;
 
-  Bullet({Position position, this.speed = 300.0, this.power = 1.0}) {
+  Bullet({Position position, this.speed = 300.0, this.power = 1.0,String img="bullet1.png"}) {
     setByPosition(position);
     width = 5.0;
     height = 11.0;
-    sprite = Sprite("bullet1.png");
+    sprite = Sprite(img);
     anchor = Anchor.center;
   }
 
@@ -39,6 +39,9 @@ class Bullet extends SpriteComponent {
 
   @override
   bool destroy() => isDestroy;
+
+  @override
+  int priority() =>2;
 }
 
 class BulletFactory extends Component with HasGameRef<BiuBiuGame> {
