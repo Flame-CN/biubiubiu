@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:biubiubiu/biu_biu_game.dart';
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/mixins/has_game_ref.dart';
@@ -9,17 +6,19 @@ import 'package:flame/sprite.dart';
 import 'package:flame/time.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'player.dart';
+import '../biu_biu_game.dart';
 
 class Bullet extends SpriteComponent {
   //子弹的速度
   double speed;
+
   //子弹的伤害
-  double power;
+  int power;
+
   //是否销毁
   bool isDestroy = false;
 
-  Bullet({Position position, this.speed = 300.0, this.power = 1.0,String img="bullet1.png"}) {
+  Bullet({Position position, this.speed = 300.0, this.power = 1, String img = "bullet1.png"}) {
     setByPosition(position);
     width = 5.0;
     height = 11.0;
@@ -41,28 +40,21 @@ class Bullet extends SpriteComponent {
   bool destroy() => isDestroy;
 
   @override
-  int priority() =>2;
+  int priority() => 10;
 }
 
-class BulletFactory extends Component with HasGameRef<BiuBiuGame> {
-  Player player;
+class BulletFactory with HasGameRef<BiuBiuGame> {
   Timer _timer;
   double limit;
 
-  BulletFactory({this.limit = 1});
-
-  @override
-  void onMount() {
+  BulletFactory({@required BiuBiuGame game, this.limit = 1}) {
+    gameRef = game;
     _timer = Timer(limit, repeat: true, callback: () {
-      gameRef.add(Bullet(position: gameRef.player.toPosition()));
+      gameRef.addLater(Bullet(position: gameRef.player.toPosition()));
     });
     _timer.start();
   }
 
-  @override
-  void render(Canvas c) {}
-
-  @override
   void update(double t) {
     _timer.update(t);
   }

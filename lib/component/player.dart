@@ -1,16 +1,18 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:biubiubiu/component/bullet.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/sprite.dart';
 
 import '../biu_biu_game.dart';
+import 'bullet.dart';
 
 class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
   Animation _live;
+  Animation _destroy;
+  bool isDestroy = false;
   BulletFactory _bulletFactory;
 
   //生命值
@@ -31,8 +33,17 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
       ],
       stepTime: 0.2,
     );
-    _bulletFactory = BulletFactory(limit: 0.3);
-    gameRef.add(_bulletFactory);
+    _destroy = Animation.spriteList(
+      [
+        Sprite("me_destroy_1.png"),
+        Sprite("me_destroy_2.png"),
+        Sprite("me_destroy_3.png"),
+        Sprite("me_destroy_4.png"),
+      ],
+      stepTime: 0.2,
+      loop: false,
+    );
+    _bulletFactory = BulletFactory(game: gameRef, limit: 0.3);
   }
 
   void move(Offset offset) {
@@ -47,19 +58,33 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
   @override
   void render(Canvas c) {
     prepareCanvas(c);
-    if (life >= 0) {
+    if (life > 0) {
       _live.getSprite().render(c, width: width, height: height);
+    } else {
+      _destroy.getSprite().render(c, width: width, height: height);
     }
   }
 
   @override
   void update(double t) {
     super.update(t);
-    if (life >= 0) {
+    if (life > 0) {
       _live.update(t);
+      _bulletFactory.update(t);
+    } else {
+      _destroy.update(t);
+      if (_destroy.done()) {
+        isDestroy = true;
+      }
     }
+  }
+  void hurt(int power) {
+    life -= power;
   }
 
   @override
-  int priority() => 10;
+  bool destroy() => isDestroy;
+
+  @override
+  int priority() => 100;
 }
