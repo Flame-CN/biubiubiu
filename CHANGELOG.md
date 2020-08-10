@@ -1,0 +1,11 @@
+## 04enemy
+    * 添加敌人
+    * 添加碰撞检测
+## 03添加子弹
+    * 添加子弹
+    * player添加射击子弹
+## 02添加player
+    * player动画
+    * player移动
+## 01background
+    * 背景
