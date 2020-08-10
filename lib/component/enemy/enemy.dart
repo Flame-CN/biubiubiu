@@ -67,7 +67,9 @@ class Enemy extends PositionComponent with HasGameRef<BiuBiuGame> {
         break;
     }
     //战机生成后向下移动
-    y += speed * dt;
+    if (state != EnemyState.DESTROY) {
+      y += speed * dt;
+    }
     //超出屏幕销毁
     if (y > gameRef.size.height + height) {
       isDestroy = true;
