@@ -14,6 +14,8 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
   Animation _destroy;
   bool isDestroy = false;
   BulletFactory _bulletFactory;
+  //player是否在移动
+  bool onMove = false;
 
   //生命值
   int life = 1;
@@ -78,6 +80,7 @@ class Player extends PositionComponent with HasGameRef<BiuBiuGame> {
       }
     }
   }
+
   void hurt(int power) {
     life -= power;
   }

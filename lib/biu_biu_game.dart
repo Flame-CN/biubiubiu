@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/anchor.dart';
@@ -33,7 +34,7 @@ class BiuBiuGame extends BaseGame with PanDetector, HasWidgetsOverlay {
 
   void init() {
     components.clear();
-    score=0;
+    score = 0;
     //添加背景组件
     add(Background(size));
     add(player = Player()
@@ -73,7 +74,7 @@ class BiuBiuGame extends BaseGame with PanDetector, HasWidgetsOverlay {
 
   @override
   void resize(Size size) {
-    tileSize = size.width / 9;
+    tileSize = min(size.width / 9, 50.0);
     super.resize(size);
   }
 
@@ -93,12 +94,36 @@ class BiuBiuGame extends BaseGame with PanDetector, HasWidgetsOverlay {
     collide();
     //计算分数
     scoreComponent.text = "SCORE $score";
+    if(recordFps()){
+      scoreComponent.text+="\nFPS ${fps().toStringAsFixed(2)}";
+    }
+  }
+
+  @override
+  void onPanStart(DragStartDetails details) {
+    if (player.toRect().contains(details.globalPosition)) {
+      player.onMove = true;
+    }
   }
 
   @override
   void onPanUpdate(DragUpdateDetails details) {
-    if (player.toRect().contains(details.globalPosition)) {
+    if (player.onMove) {
       player.move(details.delta);
+    }
+  }
+
+  @override
+  void onPanEnd(DragEndDetails details) {
+    if (player.onMove) {
+      onPanCancel();
+    }
+  }
+
+  @override
+  void onPanCancel() {
+    if (player.onMove) {
+      player.onMove = false;
     }
   }
 
@@ -106,7 +131,9 @@ class BiuBiuGame extends BaseGame with PanDetector, HasWidgetsOverlay {
     var bullets = components.whereType<Bullet>().toList();
     components.whereType<Enemy>().forEach((enemy) {
       // player 和 enemy 之间的碰撞检测
-      if (enemy.state != EnemyState.DESTROY && player.life > 0 && player.toRect().overlaps(enemy.toRect())) {
+      if (enemy.state != EnemyState.DESTROY &&
+          player.life > 0 &&
+          player.toRect().deflate(0.1 * player.width).overlaps(enemy.toRect().deflate(0.1 * enemy.width))) {
         //碰撞全部销毁
         enemy.hurt(enemy.life);
         player.hurt(player.life);
@@ -133,4 +160,7 @@ class BiuBiuGame extends BaseGame with PanDetector, HasWidgetsOverlay {
 
   @override
   bool debugMode() => false;
+
+  @override
+  bool recordFps() =>true;
 }
